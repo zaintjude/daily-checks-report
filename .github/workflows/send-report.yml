@@ -1,7 +1,8 @@
 name: Send Daily Checks Report
 
-# Scheduled workflow
+# Scheduled workflow + manual trigger
 on:
+  workflow_dispatch:   # ✅ Allows you to click "Run workflow" manually
   schedule:
     # Every day at 6:00 AM Cebu time (UTC+8 -> 22:00 UTC previous day)
     - cron: '0 22 * * *'
@@ -13,4 +14,7 @@ jobs:
     steps:
       - name: Trigger report_email.php via curl
         run: |
-          curl -s https://dashproduction.x10.mx/masterfile/dashdy/personal/report_email.php
+          echo "==== Running at $(date) ===="
+          # Run your PHP script via curl
+          response=$(curl -s -w "%{http_code}" https://dashproduction.x10.mx/masterfile/dashdy/personal/report_email.php)
+          echo "Brevo / Script response: $response"
